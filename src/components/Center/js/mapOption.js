@@ -3,7 +3,7 @@ import settings from './geoCoord';
 let geoCoordMap = settings.geoCoord;
 
 let defaultCity = '成都';
-const LINE_REPEAT_TIMES = 3;
+const LINE_REPEAT_TIMES = 2;
 
 let convertData = data => {
     let res = [];
@@ -22,19 +22,23 @@ let convertData = data => {
 };
 
 let convertScatterData = data => {
-    return data.map(item => {
-        return {
+    let arr=[];
+    data.forEach(item => {
+        if(typeof geoCoordMap[item.name]!='undefined'){
+             arr.push({
             name: item.name,
             value: geoCoordMap[item.name].concat([item.value])
-        }
+        });
+        }       
     });
+    return arr;
 }
 
 let getTopData = data => {
     data.sort((a, b) => b.value - a.value);
 
     return {
-        data: convertScatterData(data.slice(0, 4)),
+        data: convertScatterData(data.slice(0, 9)),
         sort: {
             max: data[0].value,
             min: data[data.length - 1].value
@@ -137,7 +141,7 @@ function init() {
             },
             label: {
                 normal: {
-                    show: true,
+                    show: false,
                     position: 'right',
                     formatter: '{b}',
                     textStyle: {
@@ -164,13 +168,18 @@ function init() {
             },
             label: {
                 normal: {
-                    show: false
+                    show: true,
+                    position: 'right',
+                    formatter: '{b}',
+                    textStyle: {
+                        color: '#fc0'
+                    }
                 }
             },
             itemStyle: {
                 normal: {
-                    // color: '#fc0',
-                    color: '#0ecdec',
+                    color: '#fc0',
+                    // color: '#0ecdec',
                 }
             },
             data: []
